@@ -14,7 +14,17 @@ It's a lightweight, batteries-included sample for vibe coders and AI-app builder
 
 ## What it looks like
 
-_Screenshots coming soon._ (Run the app locally with `pnpm dev` to see the dashboard, the generation flow, and the pack library.)
+**Dashboard** — pack and sticker counts, generated-this-week and pack-storage metrics, a 7-day packs-created chart, and a recent-packs table.
+
+![Dashboard with pack and sticker metrics, packs-created chart, and recent packs](docs/images/dashboard.png)
+
+**Generate** — a theme prompt plus style preset, quality, and pack-size controls that turn one description into a consistently-styled pack.
+
+![Generate page with theme prompt, style preset, quality, and pack-size controls](docs/images/generate.png)
+
+**Packs** — the library scoped to the `sticker-packs/` B2 prefix, each pack shown with its cover sticker, style, sticker count, and creation time.
+
+![Packs library showing generated sticker packs with cover stickers and metadata](docs/images/packs.png)
 
 ## Agent-First Architecture
 
