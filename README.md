@@ -26,6 +26,10 @@ It's a lightweight, batteries-included sample for vibe coders and AI-app builder
 
 ![Packs library showing generated sticker packs with cover stickers and metadata](docs/images/packs.png)
 
+**Pack detail** — open a pack to see every die-cut sticker in the set, plus one-tap export to Telegram, WhatsApp, Discord, or iMessage.
+
+![Pack detail for "a grumpy duck" showing its twelve 3D-clay stickers and export options](docs/images/pack-detail.png)
+
 ## Agent-First Architecture
 
 This repo is optimized for coding agents. The structure follows the principle that **repository knowledge is the system of record** — everything an agent needs is versioned, co-located, and discoverable from the repo itself.
