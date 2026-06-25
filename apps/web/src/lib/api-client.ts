@@ -57,7 +57,9 @@ async function apiFetch<T>(path: string, init?: RequestInit): Promise<T> {
 }
 
 export async function getHealth() {
-  return apiFetch<{ status: string; b2_connected: boolean }>("/health");
+  return apiFetch<{ status: string; b2_connected: boolean }>("/health", {
+    signal: AbortSignal.timeout(5_000),
+  });
 }
 
 export async function getFiles(prefix = "", limit = 100) {
