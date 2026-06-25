@@ -43,12 +43,19 @@ export interface HealthResponse {
   b2_connected: boolean;
 }
 
+function getErrorName(error: unknown): string {
+  if (error && typeof error === "object" && "name" in error) {
+    return String(error.name);
+  }
+  return "";
+}
+
 async function apiFetch<T>(path: string, init?: RequestInit): Promise<T> {
   let res: Response;
   try {
     res = await fetch(`${API_BASE}${path}`, init);
   } catch (error) {
-    const errorName = error instanceof Error ? error.name : "";
+    const errorName = getErrorName(error);
     if (errorName === "TimeoutError") {
       throw new ApiError("Request timed out", 408);
     }
