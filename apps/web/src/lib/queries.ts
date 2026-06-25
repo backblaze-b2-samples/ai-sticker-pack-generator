@@ -9,6 +9,7 @@ import {
   generatePack,
   getFiles,
   getFileStats,
+  getHealth,
   getPack,
   getPackActivity,
   getPacks,
@@ -17,6 +18,7 @@ import {
   getStickerUrl,
   getUploadActivity,
 } from "@/lib/api-client";
+import type { HealthResponse } from "@/lib/api-client";
 import type {
   FileMetadata,
   GeneratePackRequest,
@@ -30,6 +32,7 @@ import type {
 // "find usages" of `qk.files` reveals every consumer.
 export const qk = {
   all: ["b2"] as const,
+  health: () => [...qk.all, "health"] as const,
   files: (prefix?: string, limit?: number) =>
     [...qk.all, "files", prefix ?? "", limit ?? 100] as const,
   stats: () => [...qk.all, "stats"] as const,
@@ -44,6 +47,16 @@ export const qk = {
   stickerUrl: (packId: string, key: string) =>
     [...qk.all, "sticker-url", packId, key] as const,
 };
+
+export function useHealth() {
+  return useQuery<HealthResponse, ApiError>({
+    queryKey: qk.health(),
+    queryFn: getHealth,
+    refetchInterval: 60_000,
+    staleTime: 30_000,
+    retry: false,
+  });
+}
 
 export function useFiles(prefix = "", limit = 100) {
   return useQuery<FileMetadata[], ApiError>({

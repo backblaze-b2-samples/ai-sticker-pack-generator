@@ -38,11 +38,31 @@ export class ApiError extends Error {
   }
 }
 
+export interface HealthResponse {
+  status: "healthy" | "degraded";
+  b2_connected: boolean;
+}
+
+function getErrorName(error: unknown): string {
+  if (error && typeof error === "object" && "name" in error) {
+    return String(error.name);
+  }
+  return "";
+}
+
 async function apiFetch<T>(path: string, init?: RequestInit): Promise<T> {
   let res: Response;
   try {
     res = await fetch(`${API_BASE}${path}`, init);
-  } catch {
+  } catch (error) {
+    const errorName = getErrorName(error);
+    if (errorName === "TimeoutError") {
+      throw new ApiError("Request timed out", 408);
+    }
+    if (errorName === "AbortError") {
+      throw new ApiError("Request aborted", 0);
+    }
+
     // Network failure (offline, DNS, CORS, etc.)
     throw new ApiError("Network error — check your connection", 0);
   }
@@ -56,8 +76,10 @@ async function apiFetch<T>(path: string, init?: RequestInit): Promise<T> {
   return res.json();
 }
 
-export async function getHealth() {
-  return apiFetch<{ status: string; b2_connected: boolean }>("/health");
+export async function getHealth(): Promise<HealthResponse> {
+  return apiFetch<HealthResponse>("/health", {
+    signal: AbortSignal.timeout(5_000),
+  });
 }
 
 export async function getFiles(prefix = "", limit = 100) {
