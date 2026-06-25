@@ -47,7 +47,15 @@ async function apiFetch<T>(path: string, init?: RequestInit): Promise<T> {
   let res: Response;
   try {
     res = await fetch(`${API_BASE}${path}`, init);
-  } catch {
+  } catch (error) {
+    const errorName = error instanceof Error ? error.name : "";
+    if (errorName === "TimeoutError") {
+      throw new ApiError("Request timed out", 408);
+    }
+    if (errorName === "AbortError") {
+      throw new ApiError("Request aborted", 0);
+    }
+
     // Network failure (offline, DNS, CORS, etc.)
     throw new ApiError("Network error — check your connection", 0);
   }

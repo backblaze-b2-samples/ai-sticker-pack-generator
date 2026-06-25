@@ -33,7 +33,6 @@ import type {
 export const qk = {
   all: ["b2"] as const,
   health: () => [...qk.all, "health"] as const,
-  healthBanner: () => [...qk.all, "health", "banner"] as const,
   files: (prefix?: string, limit?: number) =>
     [...qk.all, "files", prefix ?? "", limit ?? 100] as const,
   stats: () => [...qk.all, "stats"] as const,
@@ -49,28 +48,10 @@ export const qk = {
     [...qk.all, "sticker-url", packId, key] as const,
 };
 
-async function getHealthBannerStatus(): Promise<HealthResponse | null> {
-  try {
-    return await getHealth();
-  } catch {
-    return null;
-  }
-}
-
 export function useHealth() {
   return useQuery<HealthResponse, ApiError>({
     queryKey: qk.health(),
     queryFn: getHealth,
-    refetchInterval: 60_000,
-    staleTime: 30_000,
-    retry: false,
-  });
-}
-
-export function useHealthBannerStatus() {
-  return useQuery({
-    queryKey: qk.healthBanner(),
-    queryFn: getHealthBannerStatus,
     refetchInterval: 60_000,
     staleTime: 30_000,
     retry: false,
