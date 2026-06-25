@@ -18,6 +18,7 @@ import {
   getStickerUrl,
   getUploadActivity,
 } from "@/lib/api-client";
+import type { HealthResponse } from "@/lib/api-client";
 import type {
   FileMetadata,
   GeneratePackRequest,
@@ -32,6 +33,7 @@ import type {
 export const qk = {
   all: ["b2"] as const,
   health: () => [...qk.all, "health"] as const,
+  healthBanner: () => [...qk.all, "health", "banner"] as const,
   files: (prefix?: string, limit?: number) =>
     [...qk.all, "files", prefix ?? "", limit ?? 100] as const,
   stats: () => [...qk.all, "stats"] as const,
@@ -47,7 +49,7 @@ export const qk = {
     [...qk.all, "sticker-url", packId, key] as const,
 };
 
-async function getHealthOrNull() {
+async function getHealthBannerStatus(): Promise<HealthResponse | null> {
   try {
     return await getHealth();
   } catch {
@@ -56,9 +58,19 @@ async function getHealthOrNull() {
 }
 
 export function useHealth() {
-  return useQuery({
+  return useQuery<HealthResponse, ApiError>({
     queryKey: qk.health(),
-    queryFn: getHealthOrNull,
+    queryFn: getHealth,
+    refetchInterval: 60_000,
+    staleTime: 30_000,
+    retry: false,
+  });
+}
+
+export function useHealthBannerStatus() {
+  return useQuery({
+    queryKey: qk.healthBanner(),
+    queryFn: getHealthBannerStatus,
     refetchInterval: 60_000,
     staleTime: 30_000,
     retry: false,

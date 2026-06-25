@@ -1,7 +1,7 @@
 "use client";
 
 import { AlertTriangle } from "lucide-react";
-import { useHealth } from "@/lib/queries";
+import { useHealthBannerStatus } from "@/lib/queries";
 
 /**
  * Shows a top-of-app warning when the API is up but B2 itself is
@@ -10,7 +10,7 @@ import { useHealth } from "@/lib/queries";
  * ErrorState would never fire. Polls every 60s and on window focus.
  */
 export function HealthBanner() {
-  const { data } = useHealth();
+  const { data } = useHealthBannerStatus();
 
   if (!data || data.b2_connected) return null;
 
